@@ -5,8 +5,6 @@ import {
   useTransform,
   AnimatePresence,
   useInView,
-  useMotionValue,
-  useSpring,
 } from "framer-motion";
 import {
   ArrowRight,
@@ -38,7 +36,6 @@ import {
   Settings,
   Puzzle,
   Gauge,
-  Star,
 } from "lucide-react";
 
 /* ─────────────────────────── DATA ─────────────────────────── */
@@ -196,16 +193,6 @@ const stats = [
   { value: "5★", label: "Quality Standard" },
 ];
 
-const floatingIcons = [Code2, Database, Sparkles, Zap, Globe, Cpu];
-const iconPositions = [
-  { top: "0%", left: "50%", transform: "translate(-50%,-50%)" },
-  { top: "18%", right: "0%", transform: "translateX(0)" },
-  { top: "68%", right: "0%", transform: "translateX(0)" },
-  { top: "100%", left: "50%", transform: "translate(-50%,-50%)" },
-  { top: "68%", left: "0%", transform: "translateX(0)" },
-  { top: "18%", left: "0%", transform: "translateX(0)" },
-];
-
 /* ─────────────────────────── HELPER COMPONENTS ─────────────────────────── */
 
 function FadeInSection({ children, delay = 0, className = "" }) {
@@ -226,9 +213,9 @@ function FadeInSection({ children, delay = 0, className = "" }) {
 
 function SectionLabel({ children }) {
   return (
-    <div className="flex items-center gap-3 mb-10">
+    <div className="mb-10 flex items-center gap-3">
       <div className="h-px flex-1 bg-gradient-to-r from-transparent via-sky-400/40 to-transparent" />
-      <span className="rounded-full border border-sky-400/30 bg-sky-400/8 px-5 py-2 text-[10px] tracking-[0.32em] text-sky-300 font-semibold uppercase backdrop-blur-xl whitespace-nowrap">
+      <span className="whitespace-nowrap rounded-full border border-sky-400/30 bg-sky-400/8 px-5 py-2 text-[10px] font-semibold uppercase tracking-[0.32em] text-sky-300 backdrop-blur-xl">
         {children}
       </span>
       <div className="h-px flex-1 bg-gradient-to-r from-transparent via-sky-400/40 to-transparent" />
@@ -243,9 +230,9 @@ function SkillBar({ label, level, delay }) {
     <div ref={ref} className="space-y-1.5">
       <div className="flex justify-between text-sm">
         <span className="text-slate-200">{label}</span>
-        <span className="text-sky-300 tabular-nums font-medium">{level}%</span>
+        <span className="font-medium tabular-nums text-sky-300">{level}%</span>
       </div>
-      <div className="h-1.5 rounded-full bg-white/8 overflow-hidden">
+      <div className="h-1.5 overflow-hidden rounded-full bg-white/8">
         <motion.div
           className="h-full rounded-full bg-gradient-to-r from-sky-400 to-blue-500"
           initial={{ width: 0 }}
@@ -266,7 +253,7 @@ function MobileNav({ open, setOpen }) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -12 }}
           transition={{ duration: 0.22 }}
-          className="absolute left-0 top-full z-50 w-full border-b border-white/10 bg-[#05070d]/98 backdrop-blur-2xl px-6 py-6 flex flex-col gap-5"
+          className="absolute left-0 top-full z-50 flex w-full flex-col gap-5 border-b border-white/10 bg-[#05070d]/98 px-6 py-6 backdrop-blur-2xl"
         >
           {["About", "Skills", "WordPress", "SEO", "Projects", "Contact"].map(
             (s) => (
@@ -274,7 +261,7 @@ function MobileNav({ open, setOpen }) {
                 key={s}
                 href={`#${s.toLowerCase()}`}
                 onClick={() => setOpen(false)}
-                className="text-base font-medium text-slate-200 hover:text-sky-300 transition-colors"
+                className="text-base font-medium text-slate-200 transition-colors hover:text-sky-300"
               >
                 {s}
               </a>
@@ -297,9 +284,11 @@ function TypingText() {
     ],
     [],
   );
+
   const [index, setIndex] = useState(0);
   const [sub, setSub] = useState(0);
   const [fwd, setFwd] = useState(true);
+
   useEffect(() => {
     const t = setTimeout(
       () => {
@@ -319,6 +308,7 @@ function TypingText() {
     );
     return () => clearTimeout(t);
   }, [phrases, index, sub, fwd]);
+
   return (
     <span className="inline-flex items-center gap-2 text-sky-300">
       <span>{phrases[index].slice(0, sub)}</span>
@@ -331,10 +321,11 @@ function TypingText() {
   );
 }
 
-// Global mouse spotlight - hidden on mobile to prevent rendering glitches
-function GlobalSpotlight() {
+function GlobalSpotlight({ enabled }) {
   const [mouse, setMouse] = useState({ x: 50, y: 50 });
+
   useEffect(() => {
+    if (!enabled) return;
     const onMove = (e) => {
       setMouse({
         x: (e.clientX / window.innerWidth) * 100,
@@ -343,10 +334,13 @@ function GlobalSpotlight() {
     };
     window.addEventListener("mousemove", onMove);
     return () => window.removeEventListener("mousemove", onMove);
-  }, []);
+  }, [enabled]);
+
+  if (!enabled) return null;
+
   return (
     <div
-      className="hidden md:block pointer-events-none fixed inset-0 z-0 transition-all duration-300"
+      className="pointer-events-none fixed inset-0 z-0 transition-all duration-300"
       style={{
         background: `radial-gradient(circle 600px at ${mouse.x}% ${mouse.y}%, rgba(56,189,248,0.12) 0%, rgba(14,165,233,0.05) 45%, transparent 70%)`,
       }}
@@ -354,7 +348,7 @@ function GlobalSpotlight() {
   );
 }
 
-function HeroParticles() {
+function HeroParticles({ enabled }) {
   const dots = useMemo(
     () =>
       Array.from({ length: 40 }, (_, i) => ({
@@ -368,6 +362,9 @@ function HeroParticles() {
       })),
     [],
   );
+
+  if (!enabled) return null;
+
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       {dots.map((d) => (
@@ -396,7 +393,9 @@ function HeroParticles() {
   );
 }
 
-function HeroGrid() {
+function HeroGrid({ enabled }) {
+  if (!enabled) return null;
+
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       <div className="absolute inset-0 bg-[linear-gradient(rgba(56,189,248,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(56,189,248,0.05)_1px,transparent_1px)] bg-[size:72px_72px]" />
@@ -430,7 +429,9 @@ function HeroGrid() {
   );
 }
 
-function HeroOrbs() {
+function HeroOrbs({ enabled }) {
+  if (!enabled) return null;
+
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       <motion.div
@@ -472,7 +473,7 @@ function HeroOrbs() {
   );
 }
 
-function ProfileCard() {
+function ProfileCard({ mobileMode }) {
   return (
     <motion.div
       initial={{ opacity: 0, x: 60, scale: 0.92 }}
@@ -480,25 +481,36 @@ function ProfileCard() {
       transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
       className="relative mx-auto w-full max-w-[340px] xl:max-w-[370px]"
     >
-      <motion.div
-        className="absolute inset-[-16px] rounded-[2.5rem] border border-sky-400/10"
-        animate={{ opacity: [0.4, 0.8, 0.4], scale: [1, 1.02, 1] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute inset-[-32px] rounded-[3rem] border border-sky-400/5"
-        animate={{ opacity: [0.2, 0.5, 0.2], scale: [1, 1.03, 1] }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 1,
-        }}
-      />
-      <div className="relative rounded-[2rem] border border-white/12 bg-white/[0.04] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.6)] md:backdrop-blur-2xl">
-        <div className="absolute inset-0 rounded-[2rem] bg-[linear-gradient(135deg,rgba(56,189,248,0.14),transparent_45%,rgba(37,99,235,0.09))]" />
+      {!mobileMode && (
+        <>
+          <motion.div
+            className="absolute inset-[-16px] rounded-[2.5rem] border border-sky-400/10"
+            animate={{ opacity: [0.4, 0.8, 0.4], scale: [1, 1.02, 1] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute inset-[-32px] rounded-[3rem] border border-sky-400/5"
+            animate={{ opacity: [0.2, 0.5, 0.2], scale: [1, 1.03, 1] }}
+            transition={{
+              duration: 6,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1,
+            }}
+          />
+        </>
+      )}
+
+      <div
+        className={`relative rounded-[2rem] border border-white/12 p-4 shadow-[0_24px_80px_rgba(0,0,0,0.6)] ${
+          mobileMode ? "bg-[#0b1220]" : "bg-white/[0.04] md:backdrop-blur-2xl"
+        }`}
+      >
+        {!mobileMode && (
+          <div className="absolute inset-0 rounded-[2rem] bg-[linear-gradient(135deg,rgba(56,189,248,0.14),transparent_45%,rgba(37,99,235,0.09))]" />
+        )}
         <div className="relative space-y-3">
-          <div className="relative flex items-center justify-center py-9 px-9">
+          <div className="relative flex items-center justify-center px-9 py-9">
             <motion.div
               className="relative z-10 overflow-hidden rounded-[1.4rem] border-2 border-sky-400/30 shadow-[0_0_48px_rgba(14,165,233,0.22)]"
               style={{ width: "calc(100% - 0px)", aspectRatio: "1" }}
@@ -510,11 +522,20 @@ function ProfileCard() {
                 ease: [0.22, 1, 0.36, 1],
               }}
             >
-              <img src="/images/Sathish.jpeg" alt="Profile" />
+              <img
+                src="/images/Sathish.jpeg"
+                alt="Profile"
+                className="h-full w-full object-cover"
+              />
             </motion.div>
           </div>
+
           <motion.div
-            className="rounded-[1.4rem] border border-white/10 bg-[rgba(8,12,20,0.72)] p-5 md:backdrop-blur-xl"
+            className={`rounded-[1.4rem] border border-white/10 p-5 ${
+              mobileMode
+                ? "bg-[#0b1220]"
+                : "bg-[rgba(8,12,20,0.72)] md:backdrop-blur-xl"
+            }`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{
@@ -527,7 +548,7 @@ function ProfileCard() {
               Professional Profile
             </p>
             <h2 className="mt-1.5 text-xl font-bold text-white">Sathish K</h2>
-            <p className="text-xs text-slate-300 mt-0.5">
+            <p className="mt-0.5 text-xs text-slate-300">
               Full Stack Developer · WordPress · SEO
             </p>
             <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
@@ -539,15 +560,17 @@ function ProfileCard() {
               ].map(([k, v], i) => (
                 <motion.div
                   key={k}
-                  className="rounded-xl border border-white/10 bg-white/5 p-3"
+                  className={`rounded-xl border border-white/10 p-3 ${
+                    mobileMode ? "bg-[#111a2b]" : "bg-white/5"
+                  }`}
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 1.05 + i * 0.07 }}
                 >
-                  <p className="text-sky-400/90 text-[9px] uppercase tracking-wider font-semibold">
+                  <p className="text-[9px] font-semibold uppercase tracking-wider text-sky-400/90">
                     {k}
                   </p>
-                  <p className="mt-0.5 font-medium text-slate-200 leading-snug">
+                  <p className="mt-0.5 font-medium leading-snug text-slate-200">
                     {v}
                   </p>
                 </motion.div>
@@ -561,9 +584,11 @@ function ProfileCard() {
 }
 
 /* ══════════════════════════════════════ MAIN ══════════════════════════════════════ */
+
 export default function PortfolioWebsite() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const heroRef = useRef(null);
 
   const { scrollYProgress } = useScroll({
@@ -574,15 +599,26 @@ export default function PortfolioWebsite() {
   const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
   useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 768);
     const fn = () => setScrolled(window.scrollY > 40);
+
+    onResize();
+    fn();
+
+    window.addEventListener("resize", onResize);
     window.addEventListener("scroll", fn, { passive: true });
-    return () => window.removeEventListener("scroll", fn);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("scroll", fn);
+    };
   }, []);
 
   const container = {
     hidden: {},
     show: { transition: { staggerChildren: 0.13, delayChildren: 0.2 } },
   };
+
   const item = {
     hidden: { opacity: 0, y: 28 },
     show: {
@@ -591,6 +627,14 @@ export default function PortfolioWebsite() {
       transition: { duration: 0.72, ease: [0.22, 1, 0.36, 1] },
     },
   };
+
+  const cardBase = isMobile
+    ? "bg-[#0b1220] border border-white/10"
+    : "bg-white/5 border border-white/10 md:backdrop-blur-2xl";
+
+  const softCard = isMobile
+    ? "bg-[#0b1220]"
+    : "bg-white/5 md:backdrop-blur-2xl";
 
   return (
     <div
@@ -601,10 +645,10 @@ export default function PortfolioWebsite() {
         backfaceVisibility: "hidden",
       }}
     >
-      <GlobalSpotlight />
+      <GlobalSpotlight enabled={!isMobile} />
       <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(148,163,184,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.035)_1px,transparent_1px)] bg-[size:80px_80px]" />
 
-      {/* ═══ NAVBAR ═══ */}
+      {/* NAVBAR */}
       <header
         className={`sticky top-0 z-40 w-full transition-all duration-300 ${
           scrolled
@@ -625,10 +669,10 @@ export default function PortfolioWebsite() {
               </span>
             </div>
             <div className="hidden sm:block">
-              <p className="text-sm font-semibold text-white leading-tight">
+              <p className="text-sm font-semibold leading-tight text-white">
                 Sathish K
               </p>
-              <p className="text-[10px] tracking-[0.28em] text-sky-300/70 uppercase">
+              <p className="text-[10px] uppercase tracking-[0.28em] text-sky-300/70">
                 Portfolio
               </p>
             </div>
@@ -645,7 +689,7 @@ export default function PortfolioWebsite() {
                 <a
                   key={s}
                   href={`#${s.toLowerCase()}`}
-                  className="relative hover:text-white transition-colors group"
+                  className="group relative transition-colors hover:text-white"
                 >
                   {s}
                   <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-sky-400 transition-all duration-300 group-hover:w-full" />
@@ -654,7 +698,7 @@ export default function PortfolioWebsite() {
             )}
             <a
               href="#contact"
-              className="ml-1 rounded-xl border border-sky-400/30 bg-sky-400/10 px-4 py-2 text-sky-300 font-medium transition hover:bg-sky-400/20 hover:border-sky-400/50"
+              className="ml-1 rounded-xl border border-sky-400/30 bg-sky-400/10 px-4 py-2 font-medium text-sky-300 transition hover:border-sky-400/50 hover:bg-sky-400/20"
             >
               Hire Me
             </a>
@@ -671,25 +715,25 @@ export default function PortfolioWebsite() {
               <Menu className="h-4 w-4" />
             )}
           </button>
+
           <MobileNav open={menuOpen} setOpen={setMenuOpen} />
         </div>
       </header>
 
-      {/* ═══════════════════════════ HERO ═══════════════════════════ */}
+      {/* HERO */}
       <section
         ref={heroRef}
-        className="relative z-10 min-h-[100vh] flex flex-col justify-center overflow-hidden"
+        className="relative z-10 flex min-h-[100vh] flex-col justify-center overflow-hidden"
       >
-        <HeroOrbs />
-        <HeroGrid />
-        <HeroParticles />
+        <HeroOrbs enabled={!isMobile} />
+        <HeroGrid enabled={!isMobile} />
+        <HeroParticles enabled={!isMobile} />
 
         <motion.div
           style={{ y: heroY, opacity: heroOpacity }}
           className="relative z-10 mx-auto w-full max-w-7xl px-5 sm:px-8"
         >
           <div className="grid items-center gap-10 py-20 lg:grid-cols-[1.18fr_0.82fr] lg:py-24 xl:gap-20">
-            {/* LEFT COLUMN */}
             <motion.div
               variants={container}
               initial="hidden"
@@ -759,10 +803,14 @@ export default function PortfolioWebsite() {
                   "SEO",
                   "UI/UX",
                   "TypeScript",
-                ].map((t, i) => (
+                ].map((t) => (
                   <motion.span
                     key={t}
-                    className="rounded-full border border-sky-400/22 bg-sky-400/7 px-3.5 py-1.5 text-sky-200 font-medium md:backdrop-blur-xl"
+                    className={`rounded-full border border-sky-400/22 px-3.5 py-1.5 font-medium text-sky-200 ${
+                      isMobile
+                        ? "bg-[#111a2b]"
+                        : "bg-sky-400/7 md:backdrop-blur-xl"
+                    }`}
                     whileHover={{
                       scale: 1.07,
                       borderColor: "rgba(56,189,248,0.45)",
@@ -776,7 +824,13 @@ export default function PortfolioWebsite() {
               </motion.div>
 
               <motion.div variants={item} className="space-y-4">
-                <div className="inline-flex min-h-[3.2rem] items-center rounded-2xl border border-sky-400/25 bg-white/[0.04] px-5 py-3 text-base font-semibold md:backdrop-blur-xl shadow-[0_0_30px_rgba(14,165,233,0.14)]">
+                <div
+                  className={`inline-flex min-h-[3.2rem] items-center rounded-2xl border border-sky-400/25 px-5 py-3 text-base font-semibold shadow-[0_0_30px_rgba(14,165,233,0.14)] ${
+                    isMobile
+                      ? "bg-[#0b1220]"
+                      : "bg-white/[0.04] md:backdrop-blur-xl"
+                  }`}
+                >
                   <TypingText />
                 </div>
                 <div className="flex flex-wrap gap-3">
@@ -794,7 +848,11 @@ export default function PortfolioWebsite() {
                   </motion.a>
                   <motion.a
                     href="#contact"
-                    className="inline-flex items-center gap-2 rounded-xl border border-sky-400/30 bg-white/5 px-7 py-3.5 text-sm font-medium text-white md:backdrop-blur-xl"
+                    className={`inline-flex items-center gap-2 rounded-xl border border-sky-400/30 px-7 py-3.5 text-sm font-medium text-white ${
+                      isMobile
+                        ? "bg-[#111a2b]"
+                        : "bg-white/5 md:backdrop-blur-xl"
+                    }`}
                     whileHover={{
                       y: -3,
                       borderColor: "rgba(56,189,248,0.55)",
@@ -811,10 +869,14 @@ export default function PortfolioWebsite() {
                 variants={item}
                 className="grid grid-cols-2 gap-3 pt-1 sm:grid-cols-4"
               >
-                {stats.map((s, i) => (
+                {stats.map((s) => (
                   <motion.div
                     key={s.label}
-                    className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3.5 text-center md:backdrop-blur-xl"
+                    className={`rounded-xl border border-white/10 px-4 py-3.5 text-center ${
+                      isMobile
+                        ? "bg-[#0b1220]"
+                        : "bg-white/[0.04] md:backdrop-blur-xl"
+                    }`}
                     whileHover={{
                       scale: 1.04,
                       borderColor: "rgba(56,189,248,0.3)",
@@ -825,7 +887,7 @@ export default function PortfolioWebsite() {
                     <div className="text-xl font-bold text-sky-300">
                       {s.value}
                     </div>
-                    <div className="mt-0.5 text-[11px] text-slate-400 leading-snug">
+                    <div className="mt-0.5 text-[11px] leading-snug text-slate-400">
                       {s.label}
                     </div>
                   </motion.div>
@@ -833,24 +895,26 @@ export default function PortfolioWebsite() {
               </motion.div>
             </motion.div>
 
-            {/* RIGHT COLUMN — PROFILE CARD */}
-            <ProfileCard />
+            <ProfileCard mobileMode={isMobile} />
           </div>
         </motion.div>
       </section>
 
-      {/* ═══ MAIN CONTENT ═══ */}
+      {/* MAIN CONTENT */}
       <div className="relative z-10 mx-auto w-full max-w-7xl px-5 pb-24 sm:px-8">
         {/* ABOUT */}
         <section id="about" className="py-16 sm:py-20">
           <FadeInSection>
             <SectionLabel>About Me</SectionLabel>
           </FadeInSection>
+
           <div className="grid gap-6 lg:grid-cols-[1fr_1.1fr]">
             <FadeInSection delay={0.08}>
               <motion.div
                 whileHover={{ y: -4 }}
-                className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-8 md:backdrop-blur-2xl"
+                className={`h-full rounded-[2rem] border border-white/10 p-8 ${
+                  isMobile ? "bg-[#0b1220]" : "bg-white/5 md:backdrop-blur-2xl"
+                }`}
               >
                 <h3 className="text-2xl font-bold leading-snug text-white">
                   A developer who designs for
@@ -872,8 +936,8 @@ export default function PortfolioWebsite() {
                     ["Delivery", "Fast, clean, responsive"],
                   ].map(([l, v]) => (
                     <div key={l} className="flex items-start gap-3 text-sm">
-                      <span className="h-1.5 w-1.5 mt-1.5 rounded-full bg-sky-400 flex-shrink-0" />
-                      <span className="text-slate-500 w-20 flex-shrink-0">
+                      <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-sky-400" />
+                      <span className="w-20 flex-shrink-0 text-slate-500">
                         {l}:
                       </span>
                       <span className="text-slate-200">{v}</span>
@@ -882,12 +946,17 @@ export default function PortfolioWebsite() {
                 </div>
               </motion.div>
             </FadeInSection>
+
             <FadeInSection delay={0.16}>
               <motion.div
                 whileHover={{ y: -4 }}
-                className="h-full rounded-[2rem] border border-sky-400/20 bg-[linear-gradient(180deg,rgba(14,165,233,0.08),rgba(255,255,255,0.03))] p-8 md:backdrop-blur-2xl"
+                className={`h-full rounded-[2rem] border border-sky-400/20 p-8 ${
+                  isMobile
+                    ? "bg-[#0b1220]"
+                    : "bg-[linear-gradient(180deg,rgba(14,165,233,0.08),rgba(255,255,255,0.03))] md:backdrop-blur-2xl"
+                }`}
               >
-                <p className="mb-6 text-xs font-bold text-sky-300 uppercase tracking-[0.28em]">
+                <p className="mb-6 text-xs font-bold uppercase tracking-[0.28em] text-sky-300">
                   Core Strengths
                 </p>
                 <div className="space-y-5">
@@ -912,12 +981,17 @@ export default function PortfolioWebsite() {
           <FadeInSection>
             <SectionLabel>Skills</SectionLabel>
           </FadeInSection>
+
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
             {Object.entries(skills).map(([cat, items], ci) => (
               <FadeInSection key={cat} delay={ci * 0.09}>
                 <motion.div
                   whileHover={{ y: -6, scale: 1.012 }}
-                  className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-6 md:backdrop-blur-2xl transition-shadow hover:border-sky-400/25 hover:shadow-[0_0_32px_rgba(14,165,233,0.10)]"
+                  className={`h-full rounded-[2rem] border border-white/10 p-6 transition-shadow hover:border-sky-400/25 hover:shadow-[0_0_32px_rgba(14,165,233,0.10)] ${
+                    isMobile
+                      ? "bg-[#0b1220]"
+                      : "bg-white/5 md:backdrop-blur-2xl"
+                  }`}
                 >
                   <div className="mb-5 flex items-center gap-3">
                     <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-sky-400/25 bg-sky-400/10 text-sky-300">
@@ -938,7 +1012,9 @@ export default function PortfolioWebsite() {
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
                         transition={{ delay: ci * 0.06 + ii * 0.045 }}
-                        className="rounded-full border border-sky-400/15 bg-black/25 px-3 py-1.5 text-xs text-slate-200"
+                        className={`rounded-full border border-sky-400/15 px-3 py-1.5 text-xs text-slate-200 ${
+                          isMobile ? "bg-[#111a2b]" : "bg-black/25"
+                        }`}
                       >
                         {item}
                       </motion.span>
@@ -955,6 +1031,7 @@ export default function PortfolioWebsite() {
           <FadeInSection>
             <SectionLabel>Services</SectionLabel>
           </FadeInSection>
+
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
             {services.map((svc, i) => {
               const Icon = svc.icon;
@@ -965,18 +1042,18 @@ export default function PortfolioWebsite() {
                     className={`h-full rounded-[2rem] p-6 transition-all cursor-default ${
                       svc.highlight
                         ? "border border-sky-400/30 bg-[linear-gradient(135deg,rgba(14,165,233,0.12),rgba(37,99,235,0.07))] shadow-[0_0_40px_rgba(14,165,233,0.10)] hover:shadow-[0_0_60px_rgba(14,165,233,0.18)]"
-                        : "border border-white/10 bg-white/5 hover:shadow-[0_0_32px_rgba(14,165,233,0.08)]"
-                    } md:backdrop-blur-2xl`}
+                        : cardBase
+                    }`}
                   >
                     <div className="mb-5 flex flex-col gap-3">
                       {svc.highlight && (
-                        <span className="self-start inline-flex items-center gap-1.5 rounded-full border border-sky-400/30 bg-sky-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-sky-300">
+                        <span className="inline-flex self-start items-center gap-1.5 rounded-full border border-sky-400/30 bg-sky-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-sky-300">
                           <Sparkles className="h-3 w-3" /> Core Speciality
                         </span>
                       )}
                       <motion.div
                         whileHover={{ rotate: 8, scale: 1.1 }}
-                        className={`self-start inline-flex rounded-2xl border p-3.5 ${
+                        className={`inline-flex self-start rounded-2xl border p-3.5 ${
                           svc.highlight
                             ? "border-sky-400/30 bg-sky-400/12 text-sky-300"
                             : "border-sky-400/15 bg-black/25 text-sky-300"
@@ -998,14 +1075,24 @@ export default function PortfolioWebsite() {
           </div>
         </section>
 
-        {/* WORDPRESS SPOTLIGHT */}
+        {/* WORDPRESS */}
         <section id="wordpress" className="py-16 sm:py-20">
           <FadeInSection>
             <SectionLabel>WordPress Development</SectionLabel>
           </FadeInSection>
+
           <FadeInSection delay={0.08}>
-            <div className="relative mb-8 overflow-hidden rounded-[2rem] border border-sky-400/25 bg-[linear-gradient(135deg,rgba(14,165,233,0.14),rgba(37,99,235,0.08)_50%,rgba(5,7,13,0.95))] p-8 sm:p-10 md:backdrop-blur-2xl shadow-[0_0_60px_rgba(14,165,233,0.10)]">
-              <div className="pointer-events-none absolute right-0 top-0 h-full w-1/2 bg-[radial-gradient(circle_at_80%_30%,rgba(56,189,248,0.12),transparent_55%)]" />
+            <div
+              className={`relative mb-8 overflow-hidden rounded-[2rem] border border-sky-400/25 p-8 sm:p-10 shadow-[0_0_60px_rgba(14,165,233,0.10)] ${
+                isMobile
+                  ? "bg-[#0b1220]"
+                  : "bg-[linear-gradient(135deg,rgba(14,165,233,0.14),rgba(37,99,235,0.08)_50%,rgba(5,7,13,0.95))] md:backdrop-blur-2xl"
+              }`}
+            >
+              {!isMobile && (
+                <div className="pointer-events-none absolute right-0 top-0 h-full w-1/2 bg-[radial-gradient(circle_at_80%_30%,rgba(56,189,248,0.12),transparent_55%)]" />
+              )}
+
               <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
                 <div className="max-w-xl">
                   <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-sky-400/30 bg-sky-400/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-sky-300">
@@ -1025,11 +1112,12 @@ export default function PortfolioWebsite() {
                   </p>
                   <a
                     href="#contact"
-                    className="mt-6 inline-flex items-center gap-2 rounded-xl bg-sky-400 px-6 py-3 text-sm font-bold text-slate-950 shadow-[0_0_24px_rgba(56,189,248,0.35)] hover:bg-sky-300 transition-colors"
+                    className="mt-6 inline-flex items-center gap-2 rounded-xl bg-sky-400 px-6 py-3 text-sm font-bold text-slate-950 shadow-[0_0_24px_rgba(56,189,248,0.35)] transition-colors hover:bg-sky-300"
                   >
                     Start a WordPress Project <ArrowRight className="h-4 w-4" />
                   </a>
                 </div>
+
                 <div className="grid grid-cols-2 gap-4 lg:w-80 lg:flex-shrink-0">
                   {[
                     ["Custom Themes", "Built from scratch — no page builders"],
@@ -1039,9 +1127,11 @@ export default function PortfolioWebsite() {
                   ].map(([t, s]) => (
                     <div
                       key={t}
-                      className="rounded-2xl border border-sky-400/15 bg-black/35 p-5"
+                      className={`rounded-2xl border border-sky-400/15 p-5 ${
+                        isMobile ? "bg-[#111a2b]" : "bg-black/35"
+                      }`}
                     >
-                      <p className="text-sm font-bold text-sky-300 leading-snug">
+                      <p className="text-sm font-bold leading-snug text-sky-300">
                         {t}
                       </p>
                       <p className="mt-1.5 text-xs leading-5 text-slate-300">
@@ -1053,6 +1143,7 @@ export default function PortfolioWebsite() {
               </div>
             </div>
           </FadeInSection>
+
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
             {wordpressFeatures.map((f, i) => {
               const Icon = f.icon;
@@ -1060,7 +1151,11 @@ export default function PortfolioWebsite() {
                 <FadeInSection key={f.title} delay={i * 0.09}>
                   <motion.div
                     whileHover={{ y: -6 }}
-                    className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-6 md:backdrop-blur-2xl hover:border-sky-400/20 transition-all hover:shadow-[0_0_28px_rgba(14,165,233,0.08)]"
+                    className={`h-full rounded-[2rem] border border-white/10 p-6 transition-all hover:border-sky-400/20 hover:shadow-[0_0_28px_rgba(14,165,233,0.08)] ${
+                      isMobile
+                        ? "bg-[#0b1220]"
+                        : "bg-white/5 md:backdrop-blur-2xl"
+                    }`}
                   >
                     <div className="mb-4 inline-flex rounded-2xl border border-sky-400/20 bg-sky-400/8 p-3 text-sky-300">
                       <Icon className="h-4 w-4" />
@@ -1076,14 +1171,24 @@ export default function PortfolioWebsite() {
           </div>
         </section>
 
-        {/* SEO SPOTLIGHT */}
+        {/* SEO */}
         <section id="seo" className="py-16 sm:py-20">
           <FadeInSection>
             <SectionLabel>SEO Optimization</SectionLabel>
           </FadeInSection>
+
           <FadeInSection delay={0.08}>
-            <div className="relative mb-8 overflow-hidden rounded-[2rem] border border-emerald-400/20 bg-[linear-gradient(135deg,rgba(16,185,129,0.10),rgba(5,150,105,0.06)_50%,rgba(5,7,13,0.95))] p-8 sm:p-10 md:backdrop-blur-2xl shadow-[0_0_60px_rgba(16,185,129,0.08)]">
-              <div className="pointer-events-none absolute right-0 top-0 h-full w-1/2 bg-[radial-gradient(circle_at_80%_30%,rgba(16,185,129,0.10),transparent_55%)]" />
+            <div
+              className={`relative mb-8 overflow-hidden rounded-[2rem] border border-emerald-400/20 p-8 sm:p-10 shadow-[0_0_60px_rgba(16,185,129,0.08)] ${
+                isMobile
+                  ? "bg-[#0b1220]"
+                  : "bg-[linear-gradient(135deg,rgba(16,185,129,0.10),rgba(5,150,105,0.06)_50%,rgba(5,7,13,0.95))] md:backdrop-blur-2xl"
+              }`}
+            >
+              {!isMobile && (
+                <div className="pointer-events-none absolute right-0 top-0 h-full w-1/2 bg-[radial-gradient(circle_at_80%_30%,rgba(16,185,129,0.10),transparent_55%)]" />
+              )}
+
               <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
                 <div className="max-w-xl">
                   <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/8 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-emerald-300">
@@ -1105,11 +1210,12 @@ export default function PortfolioWebsite() {
                   </p>
                   <a
                     href="#contact"
-                    className="mt-6 inline-flex items-center gap-2 rounded-xl bg-emerald-400 px-6 py-3 text-sm font-bold text-slate-950 shadow-[0_0_24px_rgba(16,185,129,0.35)] hover:bg-emerald-300 transition-colors"
+                    className="mt-6 inline-flex items-center gap-2 rounded-xl bg-emerald-400 px-6 py-3 text-sm font-bold text-slate-950 shadow-[0_0_24px_rgba(16,185,129,0.35)] transition-colors hover:bg-emerald-300"
                   >
                     Improve My SEO <ArrowRight className="h-4 w-4" />
                   </a>
                 </div>
+
                 <div className="grid grid-cols-2 gap-4 lg:w-80 lg:flex-shrink-0">
                   {[
                     ["Technical SEO", "Crawl, index & structured data fixes"],
@@ -1119,9 +1225,11 @@ export default function PortfolioWebsite() {
                   ].map(([t, s]) => (
                     <div
                       key={t}
-                      className="rounded-2xl border border-emerald-400/15 bg-black/35 p-5"
+                      className={`rounded-2xl border border-emerald-400/15 p-5 ${
+                        isMobile ? "bg-[#111a2b]" : "bg-black/35"
+                      }`}
                     >
-                      <p className="text-sm font-bold text-emerald-300 leading-snug">
+                      <p className="text-sm font-bold leading-snug text-emerald-300">
                         {t}
                       </p>
                       <p className="mt-1.5 text-xs leading-5 text-slate-300">
@@ -1133,6 +1241,7 @@ export default function PortfolioWebsite() {
               </div>
             </div>
           </FadeInSection>
+
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
             {seoFeatures.map((f, i) => {
               const Icon = f.icon;
@@ -1140,7 +1249,11 @@ export default function PortfolioWebsite() {
                 <FadeInSection key={f.title} delay={i * 0.08}>
                   <motion.div
                     whileHover={{ y: -6 }}
-                    className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-6 md:backdrop-blur-2xl hover:border-emerald-400/20 transition-all hover:shadow-[0_0_28px_rgba(16,185,129,0.07)]"
+                    className={`h-full rounded-[2rem] border border-white/10 p-6 transition-all hover:border-emerald-400/20 hover:shadow-[0_0_28px_rgba(16,185,129,0.07)] ${
+                      isMobile
+                        ? "bg-[#0b1220]"
+                        : "bg-white/5 md:backdrop-blur-2xl"
+                    }`}
                   >
                     <div className="mb-4 inline-flex rounded-2xl border border-emerald-400/20 bg-emerald-400/6 p-3 text-emerald-300">
                       <Icon className="h-4 w-4" />
@@ -1161,21 +1274,26 @@ export default function PortfolioWebsite() {
           <FadeInSection>
             <SectionLabel>Featured Projects</SectionLabel>
           </FadeInSection>
+
           <div className="grid gap-6 lg:grid-cols-3">
             {projects.map((proj, i) => (
               <FadeInSection key={proj.name} delay={i * 0.11}>
                 <motion.article
                   whileHover={{ y: -10 }}
-                  className="group relative h-full overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 md:backdrop-blur-2xl transition-all hover:border-sky-400/20 hover:shadow-[0_12px_60px_rgba(14,165,233,0.13)]"
+                  className={`group relative h-full overflow-hidden rounded-[2rem] border border-white/10 transition-all hover:border-sky-400/20 hover:shadow-[0_12px_60px_rgba(14,165,233,0.13)] ${
+                    isMobile
+                      ? "bg-[#0b1220]"
+                      : "bg-white/5 md:backdrop-blur-2xl"
+                  }`}
                 >
-                  <div className="relative h-44 bg-[radial-gradient(circle_at_50%_0%,rgba(56,189,248,0.22),rgba(5,7,13,0.95)_70%)] p-6 overflow-hidden">
+                  <div className="relative h-44 overflow-hidden bg-[radial-gradient(circle_at_50%_0%,rgba(56,189,248,0.22),rgba(5,7,13,0.95)_70%)] p-6">
                     <motion.div
                       className="absolute inset-0 bg-gradient-to-br from-sky-400/10 to-blue-600/5 opacity-0"
                       whileHover={{ opacity: 1 }}
                       transition={{ duration: 0.3 }}
                     />
                     <div className="relative flex items-start justify-between">
-                      <span className="rounded-full border border-sky-400/25 bg-black/35 px-3 py-1 text-[10px] uppercase tracking-wider text-sky-300 font-medium">
+                      <span className="rounded-full border border-sky-400/25 bg-black/35 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-sky-300">
                         {proj.tag}
                       </span>
                       <motion.div
@@ -1189,22 +1307,26 @@ export default function PortfolioWebsite() {
                       {proj.name}
                     </h3>
                   </div>
+
                   <div className="p-6">
-                    <p className="text-[10px] uppercase tracking-[0.25em] text-sky-300/80 font-semibold">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-sky-300/80">
                       {proj.type}
                     </p>
                     <p className="mt-3 text-sm leading-6 text-slate-300">
                       {proj.details}
                     </p>
-                    <a
-                      href={proj.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-5 inline-flex items-center gap-2 text-xs text-sky-300/50 group-hover:text-sky-300 transition-colors duration-200"
-                    >
-                      <ExternalLink className="h-3 w-3" />
-                      <span>View Project</span>
-                    </a>
+
+                    {proj.link && (
+                      <a
+                        href={proj.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-5 inline-flex items-center gap-2 text-xs text-sky-300/60 transition-colors duration-200 group-hover:text-sky-300"
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                        <span>View Project</span>
+                      </a>
+                    )}
                   </div>
                 </motion.article>
               </FadeInSection>
@@ -1217,11 +1339,14 @@ export default function PortfolioWebsite() {
           <FadeInSection>
             <SectionLabel>Why Work With Me</SectionLabel>
           </FadeInSection>
+
           <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
             <FadeInSection delay={0.08}>
               <motion.div
                 whileHover={{ y: -4 }}
-                className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-8 md:backdrop-blur-2xl"
+                className={`h-full rounded-[2rem] border border-white/10 p-8 ${
+                  isMobile ? "bg-[#0b1220]" : "bg-white/5 md:backdrop-blur-2xl"
+                }`}
               >
                 <div className="grid gap-4 sm:grid-cols-2">
                   {whyMe.map((item, i) => (
@@ -1231,7 +1356,9 @@ export default function PortfolioWebsite() {
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: i * 0.09 }}
-                      className="flex gap-3 rounded-2xl border border-white/10 bg-[#0b1220] p-4"
+                      className={`flex gap-3 rounded-2xl border border-white/10 p-4 ${
+                        isMobile ? "bg-[#111a2b]" : "bg-[#0b1220]"
+                      }`}
                     >
                       <BadgeCheck className="mt-0.5 h-5 w-5 shrink-0 text-sky-400" />
                       <p className="text-sm leading-6 text-slate-200">{item}</p>
@@ -1240,10 +1367,15 @@ export default function PortfolioWebsite() {
                 </div>
               </motion.div>
             </FadeInSection>
+
             <FadeInSection delay={0.16}>
               <motion.div
                 whileHover={{ y: -4 }}
-                className="h-full rounded-[2rem] border border-sky-400/20 bg-[linear-gradient(180deg,rgba(14,165,233,0.10),rgba(255,255,255,0.03))] p-8 md:backdrop-blur-2xl"
+                className={`h-full rounded-[2rem] border border-sky-400/20 p-8 ${
+                  isMobile
+                    ? "bg-[#0b1220]"
+                    : "bg-[linear-gradient(180deg,rgba(14,165,233,0.10),rgba(255,255,255,0.03))] md:backdrop-blur-2xl"
+                }`}
               >
                 <h3 className="text-2xl font-bold leading-snug text-white">
                   Built to feel premium.
@@ -1264,9 +1396,9 @@ export default function PortfolioWebsite() {
                   ].map(([k, v]) => (
                     <div
                       key={k}
-                      className="rounded-2xl border border-white/10 bg-black/22 p-4"
+                      className={`rounded-2xl border border-white/10 p-4 ${isMobile ? "bg-[#111a2b]" : "bg-black/22"}`}
                     >
-                      <p className="text-[10px] text-sky-300 mb-1.5 uppercase tracking-wider font-bold">
+                      <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wider text-sky-300">
                         {k}
                       </p>
                       <p className="text-xs leading-5 text-slate-300">{v}</p>
@@ -1283,11 +1415,14 @@ export default function PortfolioWebsite() {
           <FadeInSection>
             <SectionLabel>Contact</SectionLabel>
           </FadeInSection>
+
           <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
             <FadeInSection delay={0.08}>
               <motion.div
                 whileHover={{ y: -4 }}
-                className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-8 md:backdrop-blur-2xl"
+                className={`h-full rounded-[2rem] border border-white/10 p-8 ${
+                  isMobile ? "bg-[#0b1220]" : "bg-white/5 md:backdrop-blur-2xl"
+                }`}
               >
                 <h3 className="text-2xl font-bold text-white">
                   Let's build something{" "}
@@ -1319,13 +1454,15 @@ export default function PortfolioWebsite() {
                     <motion.div
                       key={label}
                       whileHover={{ x: 5 }}
-                      className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-slate-200"
+                      className={`flex items-center gap-3 rounded-2xl border border-white/10 p-4 text-sm text-slate-200 ${
+                        isMobile ? "bg-[#111a2b]" : "bg-black/20"
+                      }`}
                     >
                       <Icon className="h-4 w-4 shrink-0 text-sky-400" />
                       {href ? (
                         <a
                           href={href}
-                          className="break-all hover:text-sky-300 transition-colors"
+                          className="break-all transition-colors hover:text-sky-300"
                         >
                           {label}
                         </a>
@@ -1337,14 +1474,23 @@ export default function PortfolioWebsite() {
                 </div>
               </motion.div>
             </FadeInSection>
+
             <FadeInSection delay={0.16}>
               <motion.div
                 whileHover={{ y: -4 }}
-                className="h-full rounded-[2rem] border border-sky-400/20 bg-[linear-gradient(180deg,rgba(14,165,233,0.10),rgba(255,255,255,0.03))] p-8 md:backdrop-blur-2xl"
+                className={`h-full rounded-[2rem] border border-sky-400/20 p-8 ${
+                  isMobile
+                    ? "bg-[#0b1220]"
+                    : "bg-[linear-gradient(180deg,rgba(14,165,233,0.10),rgba(255,255,255,0.03))] md:backdrop-blur-2xl"
+                }`}
               >
-                <div className="flex h-full flex-col justify-between rounded-[1.5rem] border border-white/10 bg-black/22 p-7">
+                <div
+                  className={`flex h-full flex-col justify-between rounded-[1.5rem] border border-white/10 p-7 ${
+                    isMobile ? "bg-[#111a2b]" : "bg-black/22"
+                  }`}
+                >
                   <div>
-                    <p className="text-[10px] uppercase tracking-[0.3em] text-sky-300/80 font-semibold">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-sky-300/80">
                       Ready for high-value clients
                     </p>
                     <h3 className="mt-3 text-2xl font-bold leading-snug text-white">
@@ -1364,7 +1510,7 @@ export default function PortfolioWebsite() {
                       whileHover={{ scale: 1.02, y: -2 }}
                       whileTap={{ scale: 0.98 }}
                       href="mailto:sathishkwebdev@gmail.com"
-                      className="inline-flex items-center gap-2 rounded-xl bg-sky-400 px-7 py-3.5 text-sm font-bold text-slate-950 shadow-[0_0_24px_rgba(56,189,248,0.35)] hover:bg-sky-300 transition-colors"
+                      className="inline-flex items-center gap-2 rounded-xl bg-sky-400 px-7 py-3.5 text-sm font-bold text-slate-950 shadow-[0_0_24px_rgba(56,189,248,0.35)] transition-colors hover:bg-sky-300"
                     >
                       Start a Project <ArrowRight className="h-4 w-4" />
                     </motion.a>
