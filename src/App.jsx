@@ -331,7 +331,7 @@ function TypingText() {
   );
 }
 
-// Global mouse spotlight (works everywhere, doesn't dim content)
+// Global mouse spotlight - hidden on mobile to prevent rendering glitches
 function GlobalSpotlight() {
   const [mouse, setMouse] = useState({ x: 50, y: 50 });
   useEffect(() => {
@@ -346,7 +346,7 @@ function GlobalSpotlight() {
   }, []);
   return (
     <div
-      className="pointer-events-none fixed inset-0 z-0 transition-all duration-300"
+      className="hidden md:block pointer-events-none fixed inset-0 z-0 transition-all duration-300"
       style={{
         background: `radial-gradient(circle 600px at ${mouse.x}% ${mouse.y}%, rgba(56,189,248,0.12) 0%, rgba(14,165,233,0.05) 45%, transparent 70%)`,
       }}
@@ -495,7 +495,7 @@ function ProfileCard() {
           delay: 1,
         }}
       />
-      <div className="relative rounded-[2rem] border border-white/12 bg-white/[0.04] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.6)] backdrop-blur-2xl">
+      <div className="relative rounded-[2rem] border border-white/12 bg-white/[0.04] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.6)] md:backdrop-blur-2xl">
         <div className="absolute inset-0 rounded-[2rem] bg-[linear-gradient(135deg,rgba(56,189,248,0.14),transparent_45%,rgba(37,99,235,0.09))]" />
         <div className="relative space-y-3">
           <div className="relative flex items-center justify-center py-9 px-9">
@@ -514,7 +514,7 @@ function ProfileCard() {
             </motion.div>
           </div>
           <motion.div
-            className="rounded-[1.4rem] border border-white/10 bg-[rgba(8,12,20,0.72)] p-5 backdrop-blur-xl"
+            className="rounded-[1.4rem] border border-white/10 bg-[rgba(8,12,20,0.72)] p-5 md:backdrop-blur-xl"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{
@@ -593,15 +593,22 @@ export default function PortfolioWebsite() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#05070d] text-white">
-      {" "}
+    <div
+      className="relative min-h-screen overflow-hidden bg-[#05070d] text-white"
+      style={{
+        transform: "translateZ(0)",
+        WebkitTransform: "translateZ(0)",
+        backfaceVisibility: "hidden",
+      }}
+    >
       <GlobalSpotlight />
       <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(148,163,184,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.035)_1px,transparent_1px)] bg-[size:80px_80px]" />
+
       {/* ═══ NAVBAR ═══ */}
       <header
         className={`sticky top-0 z-40 w-full transition-all duration-300 ${
           scrolled
-            ? "border-b border-white/8 bg-[#05070d]/88 backdrop-blur-2xl shadow-[0_1px_24px_rgba(0,0,0,0.45)]"
+            ? "border-b border-white/8 bg-[#05070d]/88 md:backdrop-blur-2xl shadow-[0_1px_24px_rgba(0,0,0,0.45)]"
             : ""
         }`}
       >
@@ -667,6 +674,7 @@ export default function PortfolioWebsite() {
           <MobileNav open={menuOpen} setOpen={setMenuOpen} />
         </div>
       </header>
+
       {/* ═══════════════════════════ HERO ═══════════════════════════ */}
       <section
         ref={heroRef}
@@ -690,7 +698,7 @@ export default function PortfolioWebsite() {
             >
               <motion.div
                 variants={item}
-                className="inline-flex items-center gap-2.5 rounded-full border border-sky-400/30 bg-sky-400/8 px-4 py-2 text-xs text-slate-200 backdrop-blur-xl"
+                className="inline-flex items-center gap-2.5 rounded-full border border-sky-400/30 bg-sky-400/8 px-4 py-2 text-xs text-slate-200 md:backdrop-blur-xl"
               >
                 <span className="relative flex h-2 w-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
@@ -754,7 +762,7 @@ export default function PortfolioWebsite() {
                 ].map((t, i) => (
                   <motion.span
                     key={t}
-                    className="rounded-full border border-sky-400/22 bg-sky-400/7 px-3.5 py-1.5 text-sky-200 font-medium backdrop-blur-xl"
+                    className="rounded-full border border-sky-400/22 bg-sky-400/7 px-3.5 py-1.5 text-sky-200 font-medium md:backdrop-blur-xl"
                     whileHover={{
                       scale: 1.07,
                       borderColor: "rgba(56,189,248,0.45)",
@@ -768,7 +776,7 @@ export default function PortfolioWebsite() {
               </motion.div>
 
               <motion.div variants={item} className="space-y-4">
-                <div className="inline-flex min-h-[3.2rem] items-center rounded-2xl border border-sky-400/25 bg-white/[0.04] px-5 py-3 text-base font-semibold backdrop-blur-xl shadow-[0_0_30px_rgba(14,165,233,0.14)]">
+                <div className="inline-flex min-h-[3.2rem] items-center rounded-2xl border border-sky-400/25 bg-white/[0.04] px-5 py-3 text-base font-semibold md:backdrop-blur-xl shadow-[0_0_30px_rgba(14,165,233,0.14)]">
                   <TypingText />
                 </div>
                 <div className="flex flex-wrap gap-3">
@@ -786,7 +794,7 @@ export default function PortfolioWebsite() {
                   </motion.a>
                   <motion.a
                     href="#contact"
-                    className="inline-flex items-center gap-2 rounded-xl border border-sky-400/30 bg-white/5 px-7 py-3.5 text-sm font-medium text-white backdrop-blur-xl"
+                    className="inline-flex items-center gap-2 rounded-xl border border-sky-400/30 bg-white/5 px-7 py-3.5 text-sm font-medium text-white md:backdrop-blur-xl"
                     whileHover={{
                       y: -3,
                       borderColor: "rgba(56,189,248,0.55)",
@@ -806,7 +814,7 @@ export default function PortfolioWebsite() {
                 {stats.map((s, i) => (
                   <motion.div
                     key={s.label}
-                    className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3.5 text-center backdrop-blur-xl"
+                    className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3.5 text-center md:backdrop-blur-xl"
                     whileHover={{
                       scale: 1.04,
                       borderColor: "rgba(56,189,248,0.3)",
@@ -830,6 +838,7 @@ export default function PortfolioWebsite() {
           </div>
         </motion.div>
       </section>
+
       {/* ═══ MAIN CONTENT ═══ */}
       <div className="relative z-10 mx-auto w-full max-w-7xl px-5 pb-24 sm:px-8">
         {/* ABOUT */}
@@ -841,7 +850,7 @@ export default function PortfolioWebsite() {
             <FadeInSection delay={0.08}>
               <motion.div
                 whileHover={{ y: -4 }}
-                className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-8 backdrop-blur-2xl"
+                className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-8 md:backdrop-blur-2xl"
               >
                 <h3 className="text-2xl font-bold leading-snug text-white">
                   A developer who designs for
@@ -876,7 +885,7 @@ export default function PortfolioWebsite() {
             <FadeInSection delay={0.16}>
               <motion.div
                 whileHover={{ y: -4 }}
-                className="h-full rounded-[2rem] border border-sky-400/20 bg-[linear-gradient(180deg,rgba(14,165,233,0.08),rgba(255,255,255,0.03))] p-8 backdrop-blur-2xl"
+                className="h-full rounded-[2rem] border border-sky-400/20 bg-[linear-gradient(180deg,rgba(14,165,233,0.08),rgba(255,255,255,0.03))] p-8 md:backdrop-blur-2xl"
               >
                 <p className="mb-6 text-xs font-bold text-sky-300 uppercase tracking-[0.28em]">
                   Core Strengths
@@ -908,7 +917,7 @@ export default function PortfolioWebsite() {
               <FadeInSection key={cat} delay={ci * 0.09}>
                 <motion.div
                   whileHover={{ y: -6, scale: 1.012 }}
-                  className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl transition-shadow hover:border-sky-400/25 hover:shadow-[0_0_32px_rgba(14,165,233,0.10)]"
+                  className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-6 md:backdrop-blur-2xl transition-shadow hover:border-sky-400/25 hover:shadow-[0_0_32px_rgba(14,165,233,0.10)]"
                 >
                   <div className="mb-5 flex items-center gap-3">
                     <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-sky-400/25 bg-sky-400/10 text-sky-300">
@@ -953,11 +962,11 @@ export default function PortfolioWebsite() {
                 <FadeInSection key={svc.title} delay={i * 0.08}>
                   <motion.div
                     whileHover={{ y: -8 }}
-                    className={`h-full rounded-[2rem] p-6 backdrop-blur-2xl transition-all cursor-default ${
+                    className={`h-full rounded-[2rem] p-6 transition-all cursor-default ${
                       svc.highlight
                         ? "border border-sky-400/30 bg-[linear-gradient(135deg,rgba(14,165,233,0.12),rgba(37,99,235,0.07))] shadow-[0_0_40px_rgba(14,165,233,0.10)] hover:shadow-[0_0_60px_rgba(14,165,233,0.18)]"
                         : "border border-white/10 bg-white/5 hover:shadow-[0_0_32px_rgba(14,165,233,0.08)]"
-                    }`}
+                    } md:backdrop-blur-2xl`}
                   >
                     <div className="mb-5 flex flex-col gap-3">
                       {svc.highlight && (
@@ -995,7 +1004,7 @@ export default function PortfolioWebsite() {
             <SectionLabel>WordPress Development</SectionLabel>
           </FadeInSection>
           <FadeInSection delay={0.08}>
-            <div className="relative mb-8 overflow-hidden rounded-[2rem] border border-sky-400/25 bg-[linear-gradient(135deg,rgba(14,165,233,0.14),rgba(37,99,235,0.08)_50%,rgba(5,7,13,0.95))] p-8 sm:p-10 backdrop-blur-2xl shadow-[0_0_60px_rgba(14,165,233,0.10)]">
+            <div className="relative mb-8 overflow-hidden rounded-[2rem] border border-sky-400/25 bg-[linear-gradient(135deg,rgba(14,165,233,0.14),rgba(37,99,235,0.08)_50%,rgba(5,7,13,0.95))] p-8 sm:p-10 md:backdrop-blur-2xl shadow-[0_0_60px_rgba(14,165,233,0.10)]">
               <div className="pointer-events-none absolute right-0 top-0 h-full w-1/2 bg-[radial-gradient(circle_at_80%_30%,rgba(56,189,248,0.12),transparent_55%)]" />
               <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
                 <div className="max-w-xl">
@@ -1051,7 +1060,7 @@ export default function PortfolioWebsite() {
                 <FadeInSection key={f.title} delay={i * 0.09}>
                   <motion.div
                     whileHover={{ y: -6 }}
-                    className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl hover:border-sky-400/20 transition-all hover:shadow-[0_0_28px_rgba(14,165,233,0.08)]"
+                    className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-6 md:backdrop-blur-2xl hover:border-sky-400/20 transition-all hover:shadow-[0_0_28px_rgba(14,165,233,0.08)]"
                   >
                     <div className="mb-4 inline-flex rounded-2xl border border-sky-400/20 bg-sky-400/8 p-3 text-sky-300">
                       <Icon className="h-4 w-4" />
@@ -1073,7 +1082,7 @@ export default function PortfolioWebsite() {
             <SectionLabel>SEO Optimization</SectionLabel>
           </FadeInSection>
           <FadeInSection delay={0.08}>
-            <div className="relative mb-8 overflow-hidden rounded-[2rem] border border-emerald-400/20 bg-[linear-gradient(135deg,rgba(16,185,129,0.10),rgba(5,150,105,0.06)_50%,rgba(5,7,13,0.95))] p-8 sm:p-10 backdrop-blur-2xl shadow-[0_0_60px_rgba(16,185,129,0.08)]">
+            <div className="relative mb-8 overflow-hidden rounded-[2rem] border border-emerald-400/20 bg-[linear-gradient(135deg,rgba(16,185,129,0.10),rgba(5,150,105,0.06)_50%,rgba(5,7,13,0.95))] p-8 sm:p-10 md:backdrop-blur-2xl shadow-[0_0_60px_rgba(16,185,129,0.08)]">
               <div className="pointer-events-none absolute right-0 top-0 h-full w-1/2 bg-[radial-gradient(circle_at_80%_30%,rgba(16,185,129,0.10),transparent_55%)]" />
               <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
                 <div className="max-w-xl">
@@ -1131,7 +1140,7 @@ export default function PortfolioWebsite() {
                 <FadeInSection key={f.title} delay={i * 0.08}>
                   <motion.div
                     whileHover={{ y: -6 }}
-                    className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl hover:border-emerald-400/20 transition-all hover:shadow-[0_0_28px_rgba(16,185,129,0.07)]"
+                    className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-6 md:backdrop-blur-2xl hover:border-emerald-400/20 transition-all hover:shadow-[0_0_28px_rgba(16,185,129,0.07)]"
                   >
                     <div className="mb-4 inline-flex rounded-2xl border border-emerald-400/20 bg-emerald-400/6 p-3 text-emerald-300">
                       <Icon className="h-4 w-4" />
@@ -1157,7 +1166,7 @@ export default function PortfolioWebsite() {
               <FadeInSection key={proj.name} delay={i * 0.11}>
                 <motion.article
                   whileHover={{ y: -10 }}
-                  className="group relative h-full overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 backdrop-blur-2xl transition-all hover:border-sky-400/20 hover:shadow-[0_12px_60px_rgba(14,165,233,0.13)]"
+                  className="group relative h-full overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 md:backdrop-blur-2xl transition-all hover:border-sky-400/20 hover:shadow-[0_12px_60px_rgba(14,165,233,0.13)]"
                 >
                   <div className="relative h-44 bg-[radial-gradient(circle_at_50%_0%,rgba(56,189,248,0.22),rgba(5,7,13,0.95)_70%)] p-6 overflow-hidden">
                     <motion.div
@@ -1212,7 +1221,7 @@ export default function PortfolioWebsite() {
             <FadeInSection delay={0.08}>
               <motion.div
                 whileHover={{ y: -4 }}
-                className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-8 backdrop-blur-2xl"
+                className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-8 md:backdrop-blur-2xl"
               >
                 <div className="grid gap-4 sm:grid-cols-2">
                   {whyMe.map((item, i) => (
@@ -1222,7 +1231,7 @@ export default function PortfolioWebsite() {
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: i * 0.09 }}
-                      className="flex gap-3 rounded-2xl border border-white/10 bg-black/20 p-4"
+                      className="flex gap-3 rounded-2xl border border-white/10 bg-[#0b1220] p-4"
                     >
                       <BadgeCheck className="mt-0.5 h-5 w-5 shrink-0 text-sky-400" />
                       <p className="text-sm leading-6 text-slate-200">{item}</p>
@@ -1234,7 +1243,7 @@ export default function PortfolioWebsite() {
             <FadeInSection delay={0.16}>
               <motion.div
                 whileHover={{ y: -4 }}
-                className="h-full rounded-[2rem] border border-sky-400/20 bg-[linear-gradient(180deg,rgba(14,165,233,0.10),rgba(255,255,255,0.03))] p-8 backdrop-blur-2xl"
+                className="h-full rounded-[2rem] border border-sky-400/20 bg-[linear-gradient(180deg,rgba(14,165,233,0.10),rgba(255,255,255,0.03))] p-8 md:backdrop-blur-2xl"
               >
                 <h3 className="text-2xl font-bold leading-snug text-white">
                   Built to feel premium.
@@ -1278,7 +1287,7 @@ export default function PortfolioWebsite() {
             <FadeInSection delay={0.08}>
               <motion.div
                 whileHover={{ y: -4 }}
-                className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-8 backdrop-blur-2xl"
+                className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-8 md:backdrop-blur-2xl"
               >
                 <h3 className="text-2xl font-bold text-white">
                   Let's build something{" "}
@@ -1331,7 +1340,7 @@ export default function PortfolioWebsite() {
             <FadeInSection delay={0.16}>
               <motion.div
                 whileHover={{ y: -4 }}
-                className="h-full rounded-[2rem] border border-sky-400/20 bg-[linear-gradient(180deg,rgba(14,165,233,0.10),rgba(255,255,255,0.03))] p-8 backdrop-blur-2xl"
+                className="h-full rounded-[2rem] border border-sky-400/20 bg-[linear-gradient(180deg,rgba(14,165,233,0.10),rgba(255,255,255,0.03))] p-8 md:backdrop-blur-2xl"
               >
                 <div className="flex h-full flex-col justify-between rounded-[1.5rem] border border-white/10 bg-black/22 p-7">
                   <div>
@@ -1366,6 +1375,7 @@ export default function PortfolioWebsite() {
           </div>
         </section>
       </div>
+
       {/* FOOTER */}
       <footer className="relative z-10 border-t border-white/8 py-8 text-center text-xs text-slate-500">
         <p>
