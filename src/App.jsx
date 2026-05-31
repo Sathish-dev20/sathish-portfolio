@@ -108,13 +108,6 @@ const services = [
 
 const projects = [
   {
-    name: "Team7 Builder",
-    type: "Construction business website",
-    details:
-      "A strong corporate website concept for a construction brand with services, trust signals, and lead generation focus.",
-    tag: "Agency-level presence",
-  },
-  {
     name: "Wolf Expense",
     type: "Expense management app",
     details:
@@ -600,10 +593,10 @@ export default function PortfolioWebsite() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-[#05070d] text-white">
+    <div className="relative min-h-screen overflow-hidden bg-[#05070d] text-white">
+      {" "}
       <GlobalSpotlight />
       <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(148,163,184,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.035)_1px,transparent_1px)] bg-[size:80px_80px]" />
-
       {/* ═══ NAVBAR ═══ */}
       <header
         className={`sticky top-0 z-40 w-full transition-all duration-300 ${
@@ -674,7 +667,6 @@ export default function PortfolioWebsite() {
           <MobileNav open={menuOpen} setOpen={setMenuOpen} />
         </div>
       </header>
-
       {/* ═══════════════════════════ HERO ═══════════════════════════ */}
       <section
         ref={heroRef}
@@ -838,7 +830,6 @@ export default function PortfolioWebsite() {
           </div>
         </motion.div>
       </section>
-
       {/* ═══ MAIN CONTENT ═══ */}
       <div className="relative z-10 mx-auto w-full max-w-7xl px-5 pb-24 sm:px-8">
         {/* ABOUT */}
@@ -1375,7 +1366,6 @@ export default function PortfolioWebsite() {
           </div>
         </section>
       </div>
-
       {/* FOOTER */}
       <footer className="relative z-10 border-t border-white/8 py-8 text-center text-xs text-slate-500">
         <p>
