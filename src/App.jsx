@@ -1203,18 +1203,28 @@ export default function PortfolioWebsite() {
           </div>
         </section>
 
-        {/* WHY ME */}
+        {/* WHY WORK WITH ME — FIXED FOR MOBILE */}
         <section className="py-16 sm:py-20">
           <FadeInSection>
             <SectionLabel>Why Work With Me</SectionLabel>
           </FadeInSection>
           <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+            {/* LEFT COLUMN: whyMe list */}
             <FadeInSection delay={0.08}>
               <motion.div
-                whileHover={{ y: -4 }}
-                className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-8 backdrop-blur-2xl"
+                // Disable hover transform on mobile via media query in className
+                className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-5 sm:p-8 backdrop-blur-sm sm:backdrop-blur-2xl overflow-hidden"
+                // Apply hover only on devices that support hover
+                whileHover={{
+                  y:
+                    typeof window !== "undefined" &&
+                    window.matchMedia("(hover: hover)").matches
+                      ? -4
+                      : 0,
+                }}
+                transition={{ duration: 0.2 }}
               >
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
                   {whyMe.map((item, i) => (
                     <motion.div
                       key={item}
@@ -1222,7 +1232,7 @@ export default function PortfolioWebsite() {
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: i * 0.09 }}
-                      className="flex gap-3 rounded-2xl border border-white/10 bg-black/20 p-4"
+                      className="flex gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 sm:p-4 break-words"
                     >
                       <BadgeCheck className="mt-0.5 h-5 w-5 shrink-0 text-sky-400" />
                       <p className="text-sm leading-6 text-slate-200">{item}</p>
@@ -1231,22 +1241,31 @@ export default function PortfolioWebsite() {
                 </div>
               </motion.div>
             </FadeInSection>
+
+            {/* RIGHT COLUMN: premium description */}
             <FadeInSection delay={0.16}>
               <motion.div
-                whileHover={{ y: -4 }}
-                className="h-full rounded-[2rem] border border-sky-400/20 bg-[linear-gradient(180deg,rgba(14,165,233,0.10),rgba(255,255,255,0.03))] p-8 backdrop-blur-2xl"
+                className="h-full rounded-[2rem] border border-sky-400/20 bg-[linear-gradient(180deg,rgba(14,165,233,0.10),rgba(255,255,255,0.03))] p-5 sm:p-8 backdrop-blur-sm sm:backdrop-blur-2xl overflow-hidden"
+                whileHover={{
+                  y:
+                    typeof window !== "undefined" &&
+                    window.matchMedia("(hover: hover)").matches
+                      ? -4
+                      : 0,
+                }}
+                transition={{ duration: 0.2 }}
               >
-                <h3 className="text-2xl font-bold leading-snug text-white">
+                <h3 className="text-xl sm:text-2xl font-bold leading-snug text-white">
                   Built to feel premium.
                   <br />
                   <span className="text-sky-300">Built to perform.</span>
                 </h3>
-                <p className="mt-4 text-sm leading-7 text-slate-300">
+                <p className="mt-3 sm:mt-4 text-sm leading-7 text-slate-300">
                   The goal is simple: create a digital presence that looks
                   expensive, feels smooth on every device, and gives potential
                   clients confidence in your brand from the very first second.
                 </p>
-                <div className="mt-6 grid grid-cols-2 gap-4">
+                <div className="mt-5 sm:mt-6 grid grid-cols-2 gap-3 sm:gap-4">
                   {[
                     ["Design", "Glassmorphism, neon accents, elegant motion"],
                     ["Development", "Responsive, modular, scalable code"],
@@ -1255,7 +1274,7 @@ export default function PortfolioWebsite() {
                   ].map(([k, v]) => (
                     <div
                       key={k}
-                      className="rounded-2xl border border-white/10 bg-black/22 p-4"
+                      className="rounded-2xl border border-white/10 bg-black/22 p-3 sm:p-4 break-words"
                     >
                       <p className="text-[10px] text-sky-300 mb-1.5 uppercase tracking-wider font-bold">
                         {k}
