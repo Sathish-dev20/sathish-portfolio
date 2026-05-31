@@ -8,10 +8,10 @@ body {
   margin: 0;
   background: #05070d;
 }
-/* Disable heavy backdrop blur on mobile for performance + avoid glitches */
+
 @media (max-width: 640px) {
-  .backdrop-blur-2xl {
-    backdrop-filter: blur(8px) !important;
-    /* or completely remove: backdrop-filter: none !important; */
+  /* Completely disable backdrop-filter on all elements for mobile */
+  * {
+    backdrop-filter: none !important;
   }
 }

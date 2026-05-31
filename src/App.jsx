@@ -1203,89 +1203,86 @@ export default function PortfolioWebsite() {
           </div>
         </section>
 
-        {/* WHY WORK WITH ME — FIXED FOR MOBILE */}
+        {/* WHY WORK WITH ME – MOBILE-SAFE REDESIGN */}
         <section className="py-16 sm:py-20">
           <FadeInSection>
             <SectionLabel>Why Work With Me</SectionLabel>
           </FadeInSection>
           <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-            {/* LEFT COLUMN: whyMe list */}
-            <FadeInSection delay={0.08}>
-              <motion.div
-                // Disable hover transform on mobile via media query in className
-                className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-5 sm:p-8 backdrop-blur-sm sm:backdrop-blur-2xl overflow-hidden"
-                // Apply hover only on devices that support hover
-                whileHover={{
-                  y:
-                    typeof window !== "undefined" &&
-                    window.matchMedia("(hover: hover)").matches
-                      ? -4
-                      : 0,
-                }}
-                transition={{ duration: 0.2 }}
-              >
-                <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                  {whyMe.map((item, i) => (
-                    <motion.div
-                      key={item}
-                      initial={{ opacity: 0, x: -14 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.09 }}
-                      className="flex gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 sm:p-4 break-words"
-                    >
-                      <BadgeCheck className="mt-0.5 h-5 w-5 shrink-0 text-sky-400" />
-                      <p className="text-sm leading-6 text-slate-200">{item}</p>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            </FadeInSection>
+            {/* LEFT COLUMN – whyMe list */}
+            <div className="h-full rounded-[2rem] border border-white/10 bg-white/5 p-5 sm:p-8 overflow-hidden transition-all duration-300 hover:border-sky-400/30">
+              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+                {whyMe.map((item, i) => (
+                  <div
+                    key={item}
+                    className="flex gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 sm:p-4 break-words transition-all duration-200 hover:border-sky-400/30"
+                    style={{
+                      animationDelay: `${i * 0.05}s`,
+                      opacity: 0,
+                      animation: "fadeInUp 0.5s ease forwards",
+                    }}
+                  >
+                    <BadgeCheck className="mt-0.5 h-5 w-5 shrink-0 text-sky-400" />
+                    <p className="text-sm leading-6 text-slate-200">{item}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-            {/* RIGHT COLUMN: premium description */}
-            <FadeInSection delay={0.16}>
-              <motion.div
-                className="h-full rounded-[2rem] border border-sky-400/20 bg-[linear-gradient(180deg,rgba(14,165,233,0.10),rgba(255,255,255,0.03))] p-5 sm:p-8 backdrop-blur-sm sm:backdrop-blur-2xl overflow-hidden"
-                whileHover={{
-                  y:
-                    typeof window !== "undefined" &&
-                    window.matchMedia("(hover: hover)").matches
-                      ? -4
-                      : 0,
-                }}
-                transition={{ duration: 0.2 }}
-              >
-                <h3 className="text-xl sm:text-2xl font-bold leading-snug text-white">
-                  Built to feel premium.
-                  <br />
-                  <span className="text-sky-300">Built to perform.</span>
-                </h3>
-                <p className="mt-3 sm:mt-4 text-sm leading-7 text-slate-300">
-                  The goal is simple: create a digital presence that looks
-                  expensive, feels smooth on every device, and gives potential
-                  clients confidence in your brand from the very first second.
-                </p>
-                <div className="mt-5 sm:mt-6 grid grid-cols-2 gap-3 sm:gap-4">
-                  {[
-                    ["Design", "Glassmorphism, neon accents, elegant motion"],
-                    ["Development", "Responsive, modular, scalable code"],
-                    ["WordPress", "Custom themes, plugins, WooCommerce"],
-                    ["SEO", "Technical, on-page & local optimisation"],
-                  ].map(([k, v]) => (
-                    <div
-                      key={k}
-                      className="rounded-2xl border border-white/10 bg-black/22 p-3 sm:p-4 break-words"
-                    >
-                      <p className="text-[10px] text-sky-300 mb-1.5 uppercase tracking-wider font-bold">
-                        {k}
-                      </p>
-                      <p className="text-xs leading-5 text-slate-300">{v}</p>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            </FadeInSection>
+            {/* RIGHT COLUMN – premium description */}
+            <div className="h-full rounded-[2rem] border border-sky-400/20 bg-gradient-to-br from-sky-400/5 via-transparent to-transparent p-5 sm:p-8 overflow-hidden transition-all duration-300 hover:border-sky-400/40">
+              <h3 className="text-xl sm:text-2xl font-bold leading-snug text-white">
+                Built to feel premium.
+                <br />
+                <span className="text-sky-300">Built to perform.</span>
+              </h3>
+              <p className="mt-3 sm:mt-4 text-sm leading-7 text-slate-300">
+                The goal is simple: create a digital presence that looks
+                expensive, feels smooth on every device, and gives potential
+                clients confidence in your brand from the very first second.
+              </p>
+              <div className="mt-5 sm:mt-6 grid grid-cols-2 gap-3 sm:gap-4">
+                {[
+                  ["Design", "Glassmorphism, neon accents, elegant motion"],
+                  ["Development", "Responsive, modular, scalable code"],
+                  ["WordPress", "Custom themes, plugins, WooCommerce"],
+                  ["SEO", "Technical, on-page & local optimisation"],
+                ].map(([k, v]) => (
+                  <div
+                    key={k}
+                    className="rounded-2xl border border-white/10 bg-black/22 p-3 sm:p-4 break-words transition-all duration-200 hover:border-sky-400/30"
+                  >
+                    <p className="text-[10px] text-sky-300 mb-1.5 uppercase tracking-wider font-bold">
+                      {k}
+                    </p>
+                    <p className="text-xs leading-5 text-slate-300">{v}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
+
+          {/* Add keyframe animation for fade-in (no motion library needed) */}
+          <style>{`
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @media (max-width: 640px) {
+      .backdrop-blur-2xl, .backdrop-blur-sm, .backdrop-blur {
+        backdrop-filter: none !important;
+      }
+      [class*="backdrop-blur"] {
+        backdrop-filter: none !important;
+      }
+    }
+  `}</style>
         </section>
 
         {/* CONTACT */}
