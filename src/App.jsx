@@ -510,7 +510,7 @@ function ProfileCard() {
                 ease: [0.22, 1, 0.36, 1],
               }}
             >
-              <img src="/images/Sathishk.jpeg" alt="Profile" />
+              <img src="/Sathishk.jpeg" alt="Profile" />
             </motion.div>
           </div>
           <motion.div
@@ -1309,8 +1309,8 @@ export default function PortfolioWebsite() {
                   {[
                     {
                       icon: Mail,
-                      label: "sathishkwebdev@gmail.com",
-                      href: "mailto:sathishkwebdev@gmail.com",
+                      label: "sathishcraftfolio@gmail.com",
+                      href: "mailto:sathishcraftfolio@gmail.com",
                     },
                     {
                       icon: Phone,
@@ -1370,7 +1370,7 @@ export default function PortfolioWebsite() {
                     <motion.a
                       whileHover={{ scale: 1.02, y: -2 }}
                       whileTap={{ scale: 0.98 }}
-                      href="mailto:sathishkwebdev@gmail.com"
+                      href="mailto:sathishcraftfolio@gmail.com"
                       className="inline-flex items-center gap-2 rounded-xl bg-sky-400 px-7 py-3.5 text-sm font-bold text-slate-950 shadow-[0_0_24px_rgba(56,189,248,0.35)] hover:bg-sky-300 transition-colors"
                     >
                       Start a Project <ArrowRight className="h-4 w-4" />
