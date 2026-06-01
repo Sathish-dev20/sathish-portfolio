@@ -510,7 +510,7 @@ function ProfileCard() {
                 ease: [0.22, 1, 0.36, 1],
               }}
             >
-              <img src="/images/Sathish.jpeg" alt="Profile" />
+              <img src="/images/Sathishk.jpeg" alt="Profile" />
             </motion.div>
           </div>
           <motion.div
